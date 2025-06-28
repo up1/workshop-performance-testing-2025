@@ -10,9 +10,25 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/redis/go-redis/v9"
+	"github.com/zsais/go-gin-prometheus"
 )
 
 var db *sql.DB
+var rdb *redis.Client
+
+func initRedis() {
+	rdb = redis.NewClient(&redis.Options{
+		Addr: os.Getenv("REDIS_ADDR"), // e.g. "localhost:6379"
+		DB:   0,
+	})
+	// Test the Redis connection
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := rdb.Ping(ctx).Err(); err != nil {
+		log.Fatal("Cannot connect to Redis: ", err)
+	}
+}
 
 func main() {
 	var err error
@@ -21,6 +37,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	initRedis()
 
 	// Set connection pool parameters
 	// Adjust these values based on your application's needs
@@ -39,6 +57,12 @@ func main() {
 	r := gin.New()
 	r.Use(gin.Recovery())
 
+	// NewWithConfig is the recommended way to initialize the middleware
+	p := ginprometheus.NewWithConfig(ginprometheus.Config{
+		Subsystem: "gin",
+	})
+	p.Use(r)
+
 	r.GET("/users", getUsersHandler)
 	r.Run(":8080")
 }
@@ -53,6 +77,15 @@ func getUsersHandler(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 2*time.Second)
 	defer cancel()
 
+	// 1. Try Redis first
+	const cacheKey = "users:all"
+	cached, err := rdb.Get(ctx, cacheKey).Result()
+	if err == nil {
+		c.Data(http.StatusOK, "application/json", []byte(cached))
+		return
+	}
+
+	// 2. Fallback to DB
 	users, err := fetchUsers(ctx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

@@ -9,6 +9,32 @@ services:
       db:
         condition: service_healthy
 
+  api-better:
+    build:
+      context: ./api-better
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - REDIS_ADDR=redis:6379
+      - MYSQL_DSN=user:password@tcp(db:3306)/demo
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
   db:
     image: mysql
     ports:
