@@ -22,15 +22,23 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Set connection pool parameters
+	// Adjust these values based on your application's needs
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(5)
 	db.SetConnMaxLifetime(5 * time.Minute)
 
+	// Test the connection
+	// This is important to ensure the database is reachable before starting the server
 	if err := db.Ping(); err != nil {
 		log.Fatal("Cannot connect to DB: ", err)
 	}
 
-	r := gin.Default()
+	// Create a new Gin router
+	// Use gin.New() to create a new router without default middleware
+	r := gin.New()
+	r.Use(gin.Recovery())
+
 	r.GET("/users", getUsersHandler)
 	r.Run(":8080")
 }
@@ -41,6 +49,7 @@ type User struct {
 }
 
 func getUsersHandler(c *gin.Context) {
+	// Use a context with timeout for the database query
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 2*time.Second)
 	defer cancel()
 
