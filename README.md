@@ -20,6 +20,11 @@ $docker compose ps
 $docker compose logs --follow
 ```
 
+List of URLs
+* http://localhost:8080/users
+* http://localhost:8080/users/1
+* http://localhost:8080/metrics
+
 ## 2. Performance testing with K6
 ```
 $cd k6
