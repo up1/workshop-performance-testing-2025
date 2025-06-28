@@ -11,6 +11,8 @@ services:
 
   db:
     image: mysql:8.0.33
+    ports:
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=demo
@@ -51,3 +53,15 @@ services:
       - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
       - K6_OUT=xk6-prometheus-rw
     command: ["run", "-o", "xk6-prometheus-rw", "/home/k6/loadtest.js"]
+
+  prom_mysql_exporter:
+    image: prom/mysqld-exporter
+    ports:
+      - '9104:9104'
+    environment:
+      DATA_SOURCE_NAME: user:password@(db:3306)/demo
+    volumes:
+      - ./db/config.my.cnf:/.my.cnf
+    depends_on:
+      db:
+        condition: service_healthy

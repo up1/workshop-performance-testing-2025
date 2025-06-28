@@ -60,3 +60,14 @@ $docker compose ps
 
 Open K6 Dashboard
 * http://localhost:5665/
+
+## 5. Monitoring MySQL Database
+* [MySQL Exporter](https://github.com/prometheus/mysqld_exporter)
+
+```
+$docker compose up -d prom_mysql_exporter
+$docker compose ps
+```
+
+Access to metric of mysql
+* http://localhost:9104
