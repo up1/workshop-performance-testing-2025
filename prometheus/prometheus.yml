@@ -11,3 +11,9 @@ scrape_configs:
       - targets: ['prom_mysql_exporter:9104']
         labels:
           alias: mysql
+
+  - job_name: api
+    static_configs:
+      - targets: ['api-bad:8080']
+        labels:
+          alias: api

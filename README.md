@@ -25,6 +25,9 @@ List of URLs
 * http://localhost:8080/users/1
 * http://localhost:8080/metrics
 
+### Monitoring Go
+* [Go Processes](https://grafana.com/grafana/dashboards/6671-go-processes)
+
 ## 2. Performance testing with K6
 ```
 $cd k6
