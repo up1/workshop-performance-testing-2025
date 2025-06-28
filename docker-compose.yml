@@ -34,6 +34,8 @@ services:
       - --web.enable-remote-write-receiver
       - --enable-feature=native-histograms
       - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
 

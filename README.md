@@ -63,6 +63,7 @@ Open K6 Dashboard
 
 ## 5. Monitoring MySQL Database
 * [MySQL Exporter](https://github.com/prometheus/mysqld_exporter)
+* [Grafana dashboard](https://grafana.com/grafana/dashboards/14057-mysql/)
 
 ```
 $docker compose up -d prom_mysql_exporter
