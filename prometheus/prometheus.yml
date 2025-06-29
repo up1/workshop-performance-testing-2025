@@ -6,6 +6,10 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
   - job_name: mysql
     static_configs:
       - targets: ['prom_mysql_exporter:9104']
@@ -17,3 +21,10 @@ scrape_configs:
       - targets: ['api-bad:8080']
         labels:
           alias: api
+
+
+  - job_name: api-better
+    static_configs:
+      - targets: ['api-better:8080']
+        labels:
+          alias: api-better

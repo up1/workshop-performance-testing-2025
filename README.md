@@ -80,3 +80,14 @@ $docker compose ps
 
 Access to metric of mysql
 * http://localhost:9104
+
+## 6. Monitoring Node/Server
+* [node-exporter](https://github.com/prometheus/node_exporter)
+
+```
+$docker compose up -d node-exporter
+$docker compose ps
+```
+
+Access to metric of node
+* http://localhost:9100
