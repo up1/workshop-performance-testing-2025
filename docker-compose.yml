@@ -74,13 +74,13 @@ services:
 
   k6:
     build: ./k6
-    ports:
-      - "6565:6565"
+    # ports:
+      # - "6565:6565"
     environment:
       - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
       - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
       - K6_OUT=xk6-prometheus-rw
-    command: ["run", "-o", "xk6-prometheus-rw", "/home/k6/loadtest.js"]
+    command: ["run", "-o", "xk6-prometheus-rw", "/home/k6/workshop-01.js"]
 
   prom_mysql_exporter:
     image: prom/mysqld-exporter
